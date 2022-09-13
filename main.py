@@ -31,23 +31,28 @@ def main():
             inject_views = inject.send_views(
                 url_video=url_video
             )
+            if inject_views:
 
-            if "Please try again later" in inject_views:
-                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
-                exit()
+                if "Please try again later" in inject_views:
+                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
+                    exit()
 
-            elif "Successfully views sent." in inject_views:
-                print("[ " + str(
-                    datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_views + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
-                      end="\n\n")
+                elif "Successfully views sent." in inject_views:
+                    print("[ " + str(
+                        datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_views + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
+                          end="\n\n")
+
+                else:
+                    for i in range(int(inject_views), 0, -1):
+                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                            i) + " seconds to send views again.", end="\r")
+                        time.sleep(1)
+
+                time.sleep(random.randint(1, 5))
 
             else:
-                for i in range(int(inject_views), 0, -1):
-                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
-                        i) + " seconds to send views again.", end="\r")
-                    time.sleep(1)
+                pass
 
-            time.sleep(random.randint(1, 5))
 
     else:
         print(Fore.RED + "Failed to solve captcha.")
