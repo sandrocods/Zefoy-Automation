@@ -128,11 +128,14 @@ class ZefoyViews:
             elif "Session Expired. Please Re Login!" in decode:
                 return "Session Expired. Please Re Login!"
 
-            elif "Too many requests. Please slow down." in decode:
-                return "Too many requests. Please slow down."
+            # elif "Too many requests. Please slow down." in decode:
+            #     return "Too many requests. Please slow down."
 
-            match = re.findall(r" = [0-9]+", decode)
-            return match[0].replace(" = ", "")
+            try:
+                return re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+            except:
+                match = re.findall(r" = [0-9]+", decode)
+                return match[0].replace(" = ", "")
 
         except Exception as e:
             pass

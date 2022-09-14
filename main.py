@@ -47,12 +47,6 @@ def main():
                     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
                     exit()
 
-                elif "Too many requests. Please slow down." in inject_views:
-                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
-                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + "Sleeping for 5 minutes")
-                    time.sleep(random.randint(300, 600))
-                    continue
-
                 elif "Please try again later. Server too busy." in inject_views:
                     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
                     time.sleep(random.randint(300, 600))
