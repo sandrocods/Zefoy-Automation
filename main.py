@@ -1,7 +1,8 @@
 import datetime
-import time, random
-from src import process
+import random
+import time
 from colorama import init, Fore
+from src import process
 
 
 def main():
@@ -42,6 +43,21 @@ def main():
                         datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_views + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
                           end="\n\n")
 
+                elif "Session Expired. Please Re Login!" in inject_views:
+                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
+                    exit()
+
+                elif "Too many requests. Please slow down." in inject_views:
+                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
+                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + "Sleeping for 5 minutes")
+                    time.sleep(random.randint(300, 600))
+                    continue
+
+                elif "Please try again later. Server too busy." in inject_views:
+                    print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views)
+                    time.sleep(random.randint(300, 600))
+                    exit()
+
                 else:
                     for i in range(int(inject_views), 0, -1):
                         print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
@@ -52,7 +68,6 @@ def main():
 
             else:
                 pass
-
 
     else:
         print(Fore.RED + "Failed to solve captcha.")

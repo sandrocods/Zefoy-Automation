@@ -18,6 +18,7 @@ class ZefoyViews:
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
         "x-requested-with": "XMLHttpRequest",
         'Host': 'zefoy.com',
+
     }
 
     def __init__(self):
@@ -59,6 +60,9 @@ class ZefoyViews:
             headers=self.STATIC_HEADERS,
         )
 
+        if not "Extremely Superfast" in request_session.text:
+            return False
+
         soup = BeautifulSoup(request_session.text, 'html.parser')
 
         # Download Captcha Image
@@ -67,7 +71,6 @@ class ZefoyViews:
             url=self.API_ZEFOY + soup.find('img', {'alt': 'CAPTCHA code'}).get('src'),
             headers=self.STATIC_HEADERS,
         )
-
 
         with open('captcha.png', 'wb') as f:
             f.write(request_captcha_image.content)
@@ -107,8 +110,6 @@ class ZefoyViews:
             # https://stackoverflow.com/questions/58120947/base64-and-xor-operation-needed
             decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
 
-
-
             if "An error occurred. Please try again." in decode:
 
                 decode = self.force_send_views(
@@ -124,12 +125,17 @@ class ZefoyViews:
             elif "Please try again later. Server too busy." in decode:
                 return "Please try again later. Server too busy."
 
+            elif "Session Expired. Please Re Login!" in decode:
+                return "Session Expired. Please Re Login!"
+
+            elif "Too many requests. Please slow down." in decode:
+                return "Too many requests. Please slow down."
+
             match = re.findall(r" = [0-9]+", decode)
             return match[0].replace(" = ", "")
 
         except Exception as e:
             pass
-
 
     def force_send_views(self, url_video, old_request):
 
