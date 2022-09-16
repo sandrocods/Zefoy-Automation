@@ -9,6 +9,7 @@ Automation does not require Selenium or any other browser to be interface with Z
 | ----------------- | ------------------------- |
 | Auto Bypass Captcha | ✅ |
 | No Selenium / puppeteer | ✅ |
+| Add New Services Shares & Favorite | ✅ |
 
 
 ## Run Locally
@@ -31,7 +32,7 @@ Install dependencies
   pip3 install -r requirements.txt
 ```
 
-Start the server
+Start the bot
 
 ```bash
   python3 main.py
