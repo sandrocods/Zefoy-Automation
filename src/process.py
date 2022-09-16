@@ -5,13 +5,13 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
-
 # for debug
-# from requests_toolbelt.utils import dump
+from requests_toolbelt.utils import dump
+
 
 class ZefoyViews:
     API_ZEFOY = 'https://zefoy.com/'
-    API_VISION = 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAUbA4T8UWO-pw750uQqz0X2deq9lHLuLk'
+    API_VISION = 'https://api.sandroputraa.com/zefoy.php'
 
     STATIC_HEADERS = {
         "origin": "https://zefoy.com",
@@ -32,36 +32,24 @@ class ZefoyViews:
             url=self.API_VISION,
             headers={
                 'Content-Type': 'application/json',
-                'Host': 'vision.googleapis.com',
-                'x-android-package': 'image.to.text.ocr',
-                'x-android-cert': 'ad32d34755bb3b369a2ea8dfe9e0c385d73f80f0',
+                'Auth': 'sandrocods',
+                'Host': 'api.sandroputraa.com',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
             },
             json={
-                "requests": [
-                    {
-                        "image": {
-                            "content": base64.b64encode(open('captcha.png', 'rb').read()).decode('utf-8')
-                        },
-                        "features": [
-                            {
-                                "type": "TEXT_DETECTION",
-                                "maxResults": 1
-                            }
-                        ]
-                    }
-                ]
+                "img": base64.b64encode(open('captcha.png', 'rb').read()).decode('utf-8')
             }
         )
-        return solve_captcha.json()['responses'][0]['textAnnotations'][0]['description'].lower()
+        if solve_captcha.status_code == 200 and solve_captcha.json()['Message'] == 'Success':
+            return solve_captcha.json()['Data']
+        else:
+            exit("Error: " + solve_captcha.json()['message'])
 
     def get_session_captcha(self):
         request_session = self.session.get(
             url=self.API_ZEFOY,
             headers=self.STATIC_HEADERS,
         )
-
-        if not "Extremely Superfast" in request_session.text:
-            return False
 
         soup = BeautifulSoup(request_session.text, 'html.parser')
 
@@ -110,34 +98,53 @@ class ZefoyViews:
             # https://stackoverflow.com/questions/58120947/base64-and-xor-operation-needed
             decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
 
+            soup = BeautifulSoup(decode, 'html.parser')
+
             if "An error occurred. Please try again." in decode:
 
-                decode = self.force_send_views(
+                self.force_send_views(
                     url_video=url_video,
                     old_request=decode
                 )
+
                 if "Successfully views sent." in decode:
-                    return "Successfully views sent."
+                    return {
+                        'message': 'Successfully views sent.',
+                        'data': soup.find('button').text.strip()
+                    }
+                else:
+                    return {
+                        'message': 'Another State',
+                        'data': soup.find('button').text.strip()
+                    }
 
             elif "Successfully views sent." in decode:
-                return "Successfully views sent."
+                return {
+                    'message': 'Successfully views sent.',
+                    'data': soup.find('button').text.strip()
+                }
 
-            elif "Please try again later. Server too busy." in decode:
-                return "Please try again later. Server too busy."
+            # elif "Please try again later. Server too busy." in decode:
+            #     return {
+            #         'message': 'Please try again later. Server too busy.',
+            #     }
 
             elif "Session Expired. Please Re Login!" in decode:
-                return "Session Expired. Please Re Login!"
-
-            # elif "Too many requests. Please slow down." in decode:
-            #     return "Too many requests. Please slow down."
+                return {
+                    'message': 'Please try again later. Server too busy.',
+                }
 
             try:
-                return re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+                return {
+                    'message': re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+                }
             except:
                 match = re.findall(r" = [0-9]+", decode)
-                return match[0].replace(" = ", "")
+                return {
+                    'message': match[0].replace(" = ", "")
+                }
 
-        except Exception as e:
+        except Exception:
             pass
 
     def force_send_views(self, url_video, old_request):
@@ -155,6 +162,176 @@ class ZefoyViews:
         self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
         request_send_views = requests.post(
             url=self.API_ZEFOY + 'c2VuZC9mb2xsb3dlcnNfdGlrdG9V',
+            headers=self.STATIC_HEADERS,
+            data={
+                parse.find('input', {'type': 'text'}).get('name'): valid_id,
+            }
+        )
+        decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+        return decode
+
+    def send_shares(self, url_video):
+        try:
+            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+            request_send_views = self.session.post(
+                url=self.API_ZEFOY + 'c2VuZC9mb2xsb3dlcnNfdGlrdG9s',
+                headers=self.STATIC_HEADERS,
+                data={
+                    self.key_views: url_video,
+                }
+            )
+            # https://stackoverflow.com/questions/58120947/base64-and-xor-operation-needed
+            decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+
+            soup = BeautifulSoup(decode, 'html.parser')
+
+            if "An error occurred. Please try again." in decode:
+
+                self.force_send_shares(
+                    url_video=url_video,
+                    old_request=decode
+                )
+
+                if "Shares successfully sent." in decode:
+                    return {
+                        'message': 'Shares successfully sent.',
+                        'data': soup.find('button').text.strip()
+                    }
+                else:
+                    return {
+                        'message': 'Another State',
+                        'data': soup.find('button').text.strip()
+                    }
+
+            elif "Shares successfully sent." in decode:
+                return {
+                    'message': 'Successfully views sent.',
+                    'data': soup.find('button').text.strip()
+                }
+
+            # elif "Please try again later. Server too busy." in decode:
+            #     return {
+            #         'message': 'Please try again later. Server too busy.',
+            #     }
+
+            elif "Session Expired. Please Re Login!" in decode:
+                return {
+                    'message': 'Please try again later. Server too busy.',
+                }
+
+            try:
+                return {
+                    'message': re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+                }
+            except:
+                match = re.findall(r" = [0-9]+", decode)
+                return {
+                    'message': match[0].replace(" = ", "")
+                }
+
+        except Exception:
+            pass
+
+    def force_send_shares(self, url_video, old_request):
+
+        if 'tiktok' in url_video:
+            if len(urlparse(url_video).path.split('/')[-1]) == 19:
+                valid_id = urlparse(url_video).path.split('/')[-1]
+            else:
+                return False
+        else:
+            return False
+
+        parse = BeautifulSoup(old_request, 'html.parser')
+
+        self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+        request_send_views = requests.post(
+            url=self.API_ZEFOY + 'c2VuZC9mb2xsb3dlcnNfdGlrdG9s',
+            headers=self.STATIC_HEADERS,
+            data={
+                parse.find('input', {'type': 'text'}).get('name'): valid_id,
+            }
+        )
+        decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+        return decode
+
+    def send_favorites(self, url_video):
+        try:
+            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+            request_send_views = self.session.post(
+                url=self.API_ZEFOY + 'c2VuZF9mb2xsb3dlcnNfdGlrdG9L',
+                headers=self.STATIC_HEADERS,
+                data={
+                    self.key_views: url_video,
+                }
+            )
+            # https://stackoverflow.com/questions/58120947/base64-and-xor-operation-needed
+            decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+
+            soup = BeautifulSoup(decode, 'html.parser')
+
+            if "An error occurred. Please try again." in decode:
+
+                self.force_send_favorites(
+                    url_video=url_video,
+                    old_request=decode
+                )
+
+                if "Favorites successfully sent." in decode:
+                    return {
+                        'message': 'Favorites successfully sent.',
+                        'data': soup.find('button').text.strip()
+                    }
+                else:
+                    return {
+                        'message': 'Another State',
+                        'data': soup.find('button').text.strip()
+                    }
+
+            elif "Favorites successfully sent." in decode:
+                return {
+                    'message': 'Favorites successfully sent.',
+                    'data': soup.find('button').text.strip()
+                }
+
+            # elif "Please try again later. Server too busy." in decode:
+            #     return {
+            #         'message': 'Please try again later. Server too busy.',
+            #     }
+
+            elif "Session Expired. Please Re Login!" in decode:
+                return {
+                    'message': 'Please try again later. Server too busy.',
+                }
+
+            try:
+                return {
+                    'message': re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+                }
+            except:
+                match = re.findall(r" = [0-9]+", decode)
+                return {
+                    'message': match[0].replace(" = ", "")
+                }
+
+        except Exception:
+            pass
+
+    def force_send_favorites(self, url_video, old_request):
+
+        if 'tiktok' in url_video:
+            if len(urlparse(url_video).path.split('/')[-1]) == 19:
+                valid_id = urlparse(url_video).path.split('/')[-1]
+            else:
+                return False
+        else:
+            return False
+
+        parse = BeautifulSoup(old_request, 'html.parser')
+
+        self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+        request_send_views = requests.post(
+            url=self.API_ZEFOY + 'c2VuZF9mb2xsb3dlcnNfdGlrdG9L',
             headers=self.STATIC_HEADERS,
             data={
                 parse.find('input', {'type': 'text'}).get('name'): valid_id,
