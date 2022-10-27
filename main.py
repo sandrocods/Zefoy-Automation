@@ -4,6 +4,7 @@ import time
 import inquirer
 from colorama import init, Fore
 from src import process
+from prettytable import PrettyTable
 
 
 def main():
@@ -21,20 +22,34 @@ def main():
     print(Fore.LIGHTYELLOW_EX + "Example: https://www.tiktok.com/@awokwokwokwkokwow/video/6940134095989050626")
     url_video = input("Enter URL Video: ")
 
-    questions = [
-        inquirer.List('type',
-                      message="What services do you need?",
-                      choices=['Views', 'Shares', 'Favorites'],
-                      ),
-    ]
-    answers = inquirer.prompt(questions)
-
     inject.get_session_captcha()
     time.sleep(1)
 
     if inject.post_solve_captcha(captcha_result=inject.captcha_solver()):
 
         print("\n[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Success Solve Captcha" + "\n")
+
+        table = PrettyTable(field_names=["Services", "Status"], title="Status Services", header_style="upper",
+                            border=True)
+        status_services = inject.get_status_services()
+        valid_services = []
+        for service in status_services:
+            if service['name'] == 'Followers' or service['name'] == 'Comments Hearts':
+                continue
+            elif 'ago updated' in service['status']:
+                valid_services.append(service['name'])
+
+            table.add_row([service['name'], service['status']])
+        print(table)
+
+        questions = [
+            inquirer.List('type',
+                          message="What services do you need?",
+                          choices=valid_services,
+                          carousel=True,
+                          ),
+        ]
+        answers = inquirer.prompt(questions)
 
         if answers['type'] == 'Views':
 
@@ -164,6 +179,53 @@ def main():
                             print("[ " + str(
                                 datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
                                 i) + " seconds to send Favorites again.", end="\r")
+                            time.sleep(1)
+
+                    time.sleep(random.randint(1, 5))
+
+                else:
+                    pass
+
+        elif answers['type'] == 'Hearts':
+
+            while True:
+                inject_hearts = inject.send_hearts(
+                    url_video=url_video
+                )
+
+                if inject_hearts:
+
+                    if inject_hearts['message'] == "Please try again later":
+                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                            'message'])
+                        exit()
+
+                    elif inject_hearts['message'] == 'Another State':
+                        print(
+                            "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Hearts : " +
+                            inject_hearts['data'], end="\n\n")
+
+                    elif inject_hearts['message'] == "Hearts successfully sent.":
+                        print("[ " + str(
+                            datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_hearts[
+                                  'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
+                              end="\n\n")
+
+                    elif inject_hearts['message'] == "Session Expired. Please Re Login!":
+                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                            'message'])
+                        exit()
+
+                    # elif inject_hearts['message'] == "Please try again later. Server too busy.":
+                    #     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                    #         'message'])
+                    #     exit()
+
+                    else:
+                        for i in range(int(inject_hearts['message']), 0, -1):
+                            print("[ " + str(
+                                datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                                i) + " seconds to send Hearts again.", end="\r")
                             time.sleep(1)
 
                     time.sleep(random.randint(1, 5))

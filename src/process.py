@@ -5,6 +5,7 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
+
 # for debug
 # from requests_toolbelt.utils import dump
 
@@ -84,6 +85,26 @@ class ZefoyViews:
             return True
         except Exception as e:
             return "Error: " + str(e)
+
+    def get_status_services(self):
+        try:
+            temp_status = []
+            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+            self.STATIC_HEADERS['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
+
+            get_status_services = self.session.get(
+                url=self.API_ZEFOY,
+                headers=self.STATIC_HEADERS,
+            )
+            soup = BeautifulSoup(get_status_services.text, 'html.parser')
+            for i in soup.find_all('div', {'class': 'col-sm-4 col-xs-12 p-1 colsmenu'}):
+                temp_status.append({
+                    'name': i.findNext('h5').text.strip(),
+                    'status': i.findNext('small').text.strip()
+                })
+            return temp_status
+        except Exception as e:
+            self.get_status_services()
 
     def send_views(self, url_video):
         try:
@@ -332,6 +353,91 @@ class ZefoyViews:
         self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
         request_send_views = requests.post(
             url=self.API_ZEFOY + 'c2VuZF9mb2xsb3dlcnNfdGlrdG9L',
+            headers=self.STATIC_HEADERS,
+            data={
+                parse.find('input', {'type': 'text'}).get('name'): valid_id,
+            }
+        )
+        decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+        return decode
+
+    def send_hearts(self, url_video):
+        try:
+            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+            request_send_views = self.session.post(
+                url=self.API_ZEFOY + 'c2VuZE9nb2xsb3dlcnNfdGlrdG9r',
+                headers=self.STATIC_HEADERS,
+                data={
+                    self.key_views: url_video,
+                }
+            )
+            # https://stackoverflow.com/questions/58120947/base64-and-xor-operation-needed
+            decode = base64.b64decode(urllib.parse.unquote(request_send_views.text[::-1])).decode()
+
+            soup = BeautifulSoup(decode, 'html.parser')
+
+            if "An error occurred. Please try again." in decode:
+
+                self.force_send_hearts(
+                    url_video=url_video,
+                    old_request=decode
+                )
+
+                if "Hearts successfully sent." in decode:
+                    return {
+                        'message': 'Hearts successfully sent.',
+                        'data': soup.find('button').text.strip()
+                    }
+                else:
+                    return {
+                        'message': 'Another State',
+                        'data': soup.find('button').text.strip()
+                    }
+
+            elif "Hearts successfully sent." in decode:
+                return {
+                    'message': 'Hearts successfully sent.',
+                    'data': soup.find('button').text.strip()
+                }
+
+            # elif "Please try again later. Server too busy." in decode:
+            #     return {
+            #         'message': 'Please try again later. Server too busy.',
+            #     }
+
+            elif "Session Expired. Please Re Login!" in decode:
+                return {
+                    'message': 'Please try again later. Server too busy.',
+                }
+
+            try:
+                return {
+                    'message': re.search(r"ltm=[0-9]+", decode).group(0).replace("ltm=", "")
+                }
+            except:
+                match = re.findall(r" = [0-9]+", decode)
+                return {
+                    'message': match[0].replace(" = ", "")
+                }
+
+        except Exception:
+            pass
+
+    def force_send_hearts(self, url_video, old_request):
+
+        if 'tiktok' in url_video:
+            if len(urlparse(url_video).path.split('/')[-1]) == 19:
+                valid_id = urlparse(url_video).path.split('/')[-1]
+            else:
+                return False
+        else:
+            return False
+
+        parse = BeautifulSoup(old_request, 'html.parser')
+
+        self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+        request_send_views = requests.post(
+            url=self.API_ZEFOY + 'c2VuZE9nb2xsb3dlcnNfdGlrdG9r',
             headers=self.STATIC_HEADERS,
             data={
                 parse.find('input', {'type': 'text'}).get('name'): valid_id,
