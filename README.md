@@ -5,13 +5,14 @@ Automation does not require Selenium or any other browser to be interface with Z
 
 ## Feature
 
-| Name                                         | Status          |
-|----------------------------------------------|-----------------|
-| Auto Bypass Captcha                          | ✅               |
-| No Selenium / puppeteer                      | ✅               |
-| Add New Services Shares , Hearts & Favorite  | ✅               |
- | Detect status of services                    | ✅               |
- | Followers and Comments hearts                | Coming Soon 🚀  |
+| Name                                        | Status          |
+|---------------------------------------------|-----------------|
+| Auto Bypass Captcha                         | ✅               |
+| No Selenium / puppeteer                     | ✅               |
+| Add New Services Shares , Hearts & Favorite | ✅               |
+ | Detect status of services                   | ✅               |
+ | Windows exe added                          | ✅               |
+ | Followers and Comments hearts               | Coming Soon 🚀  |
 
 
 ## Run Locally
@@ -60,11 +61,19 @@ Run the bot
   python3 main.py
 ```
 
+## For Windows Users
+for windows users you can use the exe file in the output folder
+
+Download the exe file from [here](https://github.com/sandrocods/Zefoy-Automation/blob/master/output/Zefoy%20Automation%20for%20Windows.exe)
+
 
 ## Screenshots
 
 ##### New Update show status of services
 ![image](https://user-images.githubusercontent.com/59155826/198283383-f5d7e498-75e0-4022-9f50-c306effe06a5.png)
+
+##### Windows exe file
+![image](https://user-images.githubusercontent.com/59155826/198288637-2d2c4e0c-0833-44a9-92fa-21030284d669.png)
 
 ##### Running Bot
 ![image](https://user-images.githubusercontent.com/59155826/198285418-8854a9fc-c7c1-4cfa-997f-0b4d7804ca90.png)
