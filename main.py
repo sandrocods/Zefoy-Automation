@@ -10,15 +10,13 @@ from prettytable import PrettyTable
 def main():
     init(autoreset=True)
     inject = process.ZefoyViews()
-    print(
-        Fore.GREEN + """
+    print(Fore.GREEN + """
       _____ _ _  __   ___
      |_   _(_) |_\ \ / (_)_____ __ _____
        | | | | / /\ V /| / -_) V  V (_-<
        |_| |_|_\_\ \_/ |_\___|\_/\_//__/
        make with ❤️️ by @sandroputraa
-    """
-    )
+    """)
     print(Fore.LIGHTYELLOW_EX + "Example: https://www.tiktok.com/@awokwokwokwkokwow/video/6940134095989050626")
     url_video = input("Enter URL Video: ")
 
@@ -32,6 +30,8 @@ def main():
         table = PrettyTable(field_names=["Services", "Status"], title="Status Services", header_style="upper",
                             border=True)
         status_services = inject.get_status_services()
+        if status_services is None: print("Failed to get status services, try again later"); exit()
+
         valid_services = []
         for service in status_services:
             if service['name'] == 'Followers' or service['name'] == 'Comments Hearts':
@@ -39,199 +39,196 @@ def main():
             elif 'ago updated' in service['status']:
                 valid_services.append(service['name'])
 
-            table.add_row([service['name'], service['status']])
+            table.add_row([service['name'], Fore.GREEN + service['status'] + Fore.RESET if 'ago updated' in service[
+                'status'] else Fore.RED + service['status'] + Fore.RESET])
+
+        table.title = Fore.YELLOW + " Total Online Services: " + str(len(valid_services)) + Fore.RESET
         print(table)
 
         questions = [
-            inquirer.List('type',
-                          message="What services do you need?",
-                          choices=valid_services,
-                          carousel=True,
-                          ),
-        ]
+            inquirer.List('type', message="What services do you need?", choices=valid_services, carousel=True, ), ]
         answers = inquirer.prompt(questions)
 
-        if answers['type'] == 'Views':
+        while True:
 
-            while True:
-                inject_views = inject.send_views(
-                    url_video=url_video
-                )
+            try:
 
-                if inject_views:
+                if answers['type'] == 'Views':
 
-                    if inject_views['message'] == "Please try again later":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views['message'])
-                        exit()
+                    while True:
+                        inject_views = inject.send_multi_services(url_video=url_video, services=answers['type'], )
 
-                    elif inject_views['message'] == 'Another State':
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Views: " +
-                              inject_views['data'], end="\n\n")
+                        if inject_views:
 
+                            if inject_views['message'] == "Please try again later":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views[
+                                    'message'])
+                                exit()
 
-                    elif inject_views['message'] == "Successfully views sent.":
-                        print("[ " + str(
-                            datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_views[
-                                  'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
-                              end="\n\n")
-
-                    elif inject_views['message'] == "Session Expired. Please Re Login!":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views['message'])
-                        exit()
-
-                    # elif inject_views['message'] == "Please try again later. Server too busy.":
-                    #     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views['message'])
-                    #     exit()
-
-                    else:
-                        for i in range(int(inject_views['message']), 0, -1):
-                            print("[ " + str(
-                                datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
-                                i) + " seconds to send views again.", end="\r")
-                            time.sleep(1)
-
-                    time.sleep(random.randint(1, 5))
-
-                else:
-                    pass
-
-        elif answers['type'] == 'Shares':
-
-            while True:
-                inject_shares = inject.send_shares(
-                    url_video=url_video
-                )
-
-                if inject_shares:
-
-                    if inject_shares['message'] == "Please try again later":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares['message'])
-                        exit()
-
-                    elif inject_shares['message'] == 'Another State':
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Shares : " +
-                              inject_shares['data'], end="\n\n")
+                            elif inject_views['message'] == 'Another State':
+                                print("[ " + str(
+                                    datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Views: " +
+                                      inject_views['data'], end="\r")
 
 
-                    elif inject_shares['message'] == "Shares successfully sent.":
-                        print("[ " + str(
-                            datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_shares[
-                                  'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
-                              end="\n\n")
+                            elif inject_views['message'] == "Successfully views sent.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_views[
+                                    'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video + ", " + Fore.LIGHTGREEN_EX + "Current Views: " +
+                                      inject_views['data'], end="\n\n")
+                                print()
 
-                    elif inject_shares['message'] == "Session Expired. Please Re Login!":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares['message'])
-                        exit()
+                            elif inject_views['message'] == "Session Expired. Please Re Login!":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views[
+                                    'message'])
+                                exit()
 
-                    # elif inject_shares['message'] == "Please try again later. Server too busy.":
-                    #     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares['message'])
-                    #     exit()
 
-                    else:
-                        for i in range(int(inject_shares['message']), 0, -1):
-                            print("[ " + str(
-                                datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
-                                i) + " seconds to send Shares again.", end="\r")
-                            time.sleep(1)
 
-                    time.sleep(random.randint(1, 5))
+                            else:
+                                for i in range(int(inject_views['message']), 0, -1):
+                                    print("[ " + str(
+                                        datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                                        i) + " seconds to send views again.", end="\r")
+                                    time.sleep(1)
 
-                else:
-                    pass
+                            time.sleep(random.randint(1, 5))
 
-        elif answers['type'] == 'Favorites':
+                        else:
+                            pass
 
-            while True:
-                inject_favorites = inject.send_favorites(
-                    url_video=url_video
-                )
+                elif answers['type'] == 'Shares':
 
-                if inject_favorites:
+                    while True:
+                        inject_shares = inject.send_multi_services(url_video=url_video, services=answers['type'], )
 
-                    if inject_favorites['message'] == "Please try again later":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
-                            'message'])
-                        exit()
+                        if inject_shares:
 
-                    elif inject_favorites['message'] == 'Another State':
-                        print(
-                            "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Favorites : " +
-                            inject_favorites['data'], end="\n\n")
+                            if inject_shares['message'] == "Please try again later":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares[
+                                    'message'])
+                                exit()
 
-                    elif inject_favorites['message'] == "Favorites successfully sent.":
-                        print("[ " + str(
-                            datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_favorites[
-                                  'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
-                              end="\n\n")
+                            elif inject_shares['message'] == 'Another State':
+                                print("[ " + str(
+                                    datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Shares : " +
+                                      inject_shares['data'], end="\n\n")
+                                print()
 
-                    elif inject_favorites['message'] == "Session Expired. Please Re Login!":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
-                            'message'])
-                        exit()
 
-                    # elif inject_favorites['message'] == "Please try again later. Server too busy.":
-                    #     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
-                    #         'message'])
-                    #     exit()
+                            elif inject_shares['message'] == "Shares successfully sent.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_shares[
+                                    'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + Fore.LIGHTGREEN_EX + "Current Shares: " +
+                                      inject_shares['data'], end="\r")
 
-                    else:
-                        for i in range(int(inject_favorites['message']), 0, -1):
-                            print("[ " + str(
-                                datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
-                                i) + " seconds to send Favorites again.", end="\r")
-                            time.sleep(1)
 
-                    time.sleep(random.randint(1, 5))
+                            elif inject_shares['message'] == "Session Expired. Please Re Login!":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares[
+                                    'message'])
+                                exit()
 
-                else:
-                    pass
 
-        elif answers['type'] == 'Hearts':
+                            else:
+                                for i in range(int(inject_shares['message']), 0, -1):
+                                    print("[ " + str(
+                                        datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                                        i) + " seconds to send Shares again.", end="\r")
+                                    time.sleep(1)
 
-            while True:
-                inject_hearts = inject.send_hearts(
-                    url_video=url_video
-                )
+                            time.sleep(random.randint(1, 5))
 
-                if inject_hearts:
+                        else:
+                            pass
 
-                    if inject_hearts['message'] == "Please try again later":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
-                            'message'])
-                        exit()
+                elif answers['type'] == 'Favorites':
 
-                    elif inject_hearts['message'] == 'Another State':
-                        print(
-                            "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Hearts : " +
-                            inject_hearts['data'], end="\n\n")
+                    while True:
+                        inject_favorites = inject.send_multi_services(url_video=url_video, services=answers['type'], )
 
-                    elif inject_hearts['message'] == "Hearts successfully sent.":
-                        print("[ " + str(
-                            datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_hearts[
-                                  'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video,
-                              end="\n\n")
+                        if inject_favorites:
 
-                    elif inject_hearts['message'] == "Session Expired. Please Re Login!":
-                        print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
-                            'message'])
-                        exit()
+                            if inject_favorites['message'] == "Please try again later":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
+                                    'message'])
+                                exit()
 
-                    # elif inject_hearts['message'] == "Please try again later. Server too busy.":
-                    #     print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
-                    #         'message'])
-                    #     exit()
+                            elif inject_favorites['message'] == 'Another State':
+                                print("[ " + str(
+                                    datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Favorites : " +
+                                      inject_favorites['data'], end="\r")
 
-                    else:
-                        for i in range(int(inject_hearts['message']), 0, -1):
-                            print("[ " + str(
-                                datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
-                                i) + " seconds to send Hearts again.", end="\r")
-                            time.sleep(1)
 
-                    time.sleep(random.randint(1, 5))
+                            elif inject_favorites['message'] == "Favorites successfully sent.":
+                                print(
+                                    "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_favorites[
+                                        'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video + Fore.LIGHTGREEN_EX + "Current Favorites : " +
+                                    inject_favorites['data'], end="\n\n")
+                                print()
 
-                else:
-                    pass
+                            elif inject_favorites['message'] == "Session Expired. Please Re Login!":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
+                                    'message'])
+                                exit()
+
+
+
+                            else:
+                                for i in range(int(inject_favorites['message']), 0, -1):
+                                    print("[ " + str(
+                                        datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                                        i) + " seconds to send Favorites again.", end="\r")
+                                    time.sleep(1)
+
+                            time.sleep(random.randint(1, 5))
+
+                        else:
+                            pass
+
+                elif answers['type'] == 'Hearts':
+
+                    while True:
+                        inject_hearts = inject.send_multi_services(url_video=url_video, services=answers['type'], )
+
+                        if inject_hearts:
+
+                            if inject_hearts['message'] == "Please try again later":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                                    'message'])
+                                exit()
+
+                            elif inject_hearts['message'] == 'Another State':
+                                print("[ " + str(
+                                    datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + "Current Hearts : " +
+                                      inject_hearts['data'], end="\r")
+
+
+                            elif inject_hearts['message'] == "Hearts successfully sent.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_hearts[
+                                    'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video + Fore.LIGHTGREEN_EX + "Current Hearts: " +
+                                      inject_hearts['data'], end="\n\n")
+                                print()
+
+                            elif inject_hearts['message'] == "Session Expired. Please Re Login!":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                                    'message'])
+                                exit()
+
+
+
+                            else:
+                                for i in range(int(inject_hearts['message']), 0, -1):
+                                    print("[ " + str(
+                                        datetime.datetime.now()) + " ] " + Fore.LIGHTYELLOW_EX + "Please wait " + str(
+                                        i) + " seconds to send Hearts again.", end="\r")
+                                    time.sleep(1)
+
+                            time.sleep(random.randint(1, 5))
+
+                        else:
+                            pass
+
+            except Exception as e:
+                print(
+                    "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + "Unpredictable error : " + str(e))
 
     else:
         print(Fore.RED + "Failed to solve captcha.")
