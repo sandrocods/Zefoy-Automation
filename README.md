@@ -76,7 +76,7 @@ Download the exe file from [here](https://github.com/sandrocods/Zefoy-Automation
 ![image](https://user-images.githubusercontent.com/59155826/198288637-2d2c4e0c-0833-44a9-92fa-21030284d669.png)
 
 ##### Running Bot
-![image](https://user-images.githubusercontent.com/59155826/198285418-8854a9fc-c7c1-4cfa-997f-0b4d7804ca90.png)
+![image](https://user-images.githubusercontent.com/59155826/199298149-c7fba786-9a99-4871-91dc-73f158af3b03.png)
 
 ##### Result 
 ![image](https://user-images.githubusercontent.com/59155826/190060159-ac0c94de-d39a-4077-a4cf-09869d06456e.png)
