@@ -17,9 +17,10 @@ def main():
        |_| |_|_\_\ \_/ |_\___|\_/\_//__/
        make with ❤️️ by @sandroputraa
     """)
-    print(Fore.LIGHTYELLOW_EX + "Example: https://www.tiktok.com/@awokwokwokwkokwow/video/6940134095989050626")
+    print(Fore.LIGHTYELLOW_EX + "Example: https://www.tiktok.com/@awokwokwokwkokwow/video/6865609642974743810")
     url_video = input("Enter URL Video: ")
-
+    if url_video == "":
+        url_video = "https://www.tiktok.com/@awokwokwokwkokwow/video/6865609642974743810"
     inject.get_session_captcha()
     time.sleep(1)
 
@@ -82,7 +83,10 @@ def main():
                                     'message'])
                                 exit()
 
-
+                            elif inject_views['message'] == "Video not found.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_views[
+                                    'message'])
+                                exit()
 
                             else:
                                 for i in range(int(inject_views['message']), 0, -1):
@@ -126,6 +130,10 @@ def main():
                                     'message'])
                                 exit()
 
+                            elif inject_shares['message'] == "Video not found.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_shares[
+                                    'message'])
+                                exit()
 
                             else:
                                 for i in range(int(inject_shares['message']), 0, -1):
@@ -169,6 +177,10 @@ def main():
                                     'message'])
                                 exit()
 
+                            elif inject_favorites['message'] == "Video not found.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_favorites[
+                                    'message'])
+                                exit()
 
 
                             else:
@@ -212,7 +224,10 @@ def main():
                                     'message'])
                                 exit()
 
-
+                            elif inject_hearts['message'] == "Video not found.":
+                                print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + inject_hearts[
+                                    'message'])
+                                exit()
 
                             else:
                                 for i in range(int(inject_hearts['message']), 0, -1):
