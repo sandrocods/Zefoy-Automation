@@ -132,7 +132,7 @@ class ZefoyViews:
 
             decode_old = base64.b64decode(urllib.parse.unquote(post_services.text[::-1])).decode()
             soup = BeautifulSoup(decode_old, 'html.parser')
-            print("Soup: " + str(soup))
+            # print("Soup: " + str(soup))
             if "An error occurred. Please try again." in decode_old:
 
 
@@ -142,7 +142,7 @@ class ZefoyViews:
                     old_request=decode_old,
                     services=services
                 )
-                print("Force Send: " + decode.__str__())
+                # print("Force Send: " + decode.__str__())
 
                 if "Successfully " + services.lower() + " sent." in decode:
                     return {
