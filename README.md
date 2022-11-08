@@ -5,14 +5,15 @@ Automation does not require Selenium or any other browser to be interface with Z
 
 ## Feature
 
-| Name                                        | Status          |
-|---------------------------------------------|-----------------|
-| Auto Bypass Captcha                         | ✅               |
-| No Selenium / puppeteer                     | ✅               |
-| Add New Services Shares , Hearts & Favorite | ✅               |
- | Detect status of services                   | ✅               |
- | Windows exe added                          | ✅               |
- | Followers and Comments hearts               | Coming Soon 🚀  |
+| Name                                        | Status         |
+|---------------------------------------------|----------------|
+| Auto Bypass Captcha                         | ✅              |
+| No Selenium / puppeteer                     | ✅              |
+| Add New Services Shares , Hearts & Favorite | ✅              |
+ | Detect status of services                   | ✅              |
+ | Google Ads bypassed                         | ✅              |
+ | Windows exe added                           | Needs Update   |
+ | Followers and Comments hearts               | Coming Soon 🚀 |
 
 
 ## Run Locally

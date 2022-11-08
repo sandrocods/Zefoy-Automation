@@ -10,6 +10,8 @@ from prettytable import PrettyTable
 def main():
     init(autoreset=True)
     inject = process.ZefoyViews()
+    inject.get_session_captcha()
+
     print(Fore.GREEN + """
       _____ _ _  __   ___
      |_   _(_) |_\ \ / (_)_____ __ _____
@@ -21,7 +23,6 @@ def main():
     url_video = input("Enter URL Video: ")
     if url_video == "":
         url_video = "https://www.tiktok.com/@awokwokwokwkokwow/video/6865609642974743810"
-    inject.get_session_captcha()
     time.sleep(1)
 
     if inject.post_solve_captcha(captcha_result=inject.captcha_solver()):

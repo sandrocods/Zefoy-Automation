@@ -5,9 +5,9 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
-
+#
 # for debug
-# from requests_toolbelt.utils import dump
+from requests_toolbelt.utils import dump
 
 
 class ZefoyViews:
@@ -15,11 +15,21 @@ class ZefoyViews:
     API_VISION = 'https://api.sandroputraa.com/zefoy.php'
 
     STATIC_HEADERS = {
-        "origin": "https://zefoy.com",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+        "Host": "zefoy.com",
+        "Connection": "keep-alive",
+        "sec-ch-ua": "\"Chromium\";v=\"106\", \"Google Chrome\";v=\"106\", \"Not;A=Brand\";v=\"99\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-User": "?1",
+        "Sec-Fetch-Dest": "document",
+        "Accept-Language": "en-US,en;q=0.9",
         "x-requested-with": "XMLHttpRequest",
-        'Host': 'zefoy.com',
-
+        "origin": "https://zefoy.com",
     }
 
     STATIC_ENDPOINT = {
@@ -32,15 +42,31 @@ class ZefoyViews:
     def __init__(self):
         self.key_views = None
         self.session = requests.Session()
+        self.google_ads_inject()
+
         self.captcha = None
         self.phpsessid = None
+
+    def google_ads_inject(self):
+
+        request_gfp = self.session.get(
+            url='https://partner.googleadservices.com/gampad/cookie.js?domain=zefoy.com&callback=_gfp_s_&client=ca-pub-3192305768699763&gpid_exp=1 ',
+            headers={
+                "Host": "partner.googleadservices.com",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
+            }
+        )
+        self.session.cookies.set("_gads", request_gfp.text.strip().split('_value_":"')[1].split('","_expires_')[0],
+                                 domain='zefoy.com')
+        self.session.cookies.set("__gpi", request_gfp.text.strip().split('_value_":"')[2].split('","_expires_')[0],
+                                 domain='zefoy.com')
 
     def captcha_solver(self):
         solve_captcha = requests.post(
             url=self.API_VISION,
             headers={
                 'Content-Type': 'application/json',
-                'Auth': 'sandrocods',
+                'Auth': 'sandroputraa',
                 'Host': 'api.sandroputraa.com',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
             },
@@ -48,18 +74,17 @@ class ZefoyViews:
                 "img": base64.b64encode(open('captcha.png', 'rb').read()).decode('utf-8')
             }
         )
-        if solve_captcha.status_code == 200 and solve_captcha.json()['Message'] == 'Success':
+        if solve_captcha.status_code == 200 and solve_captcha.json()['message'] == 'Success':
             return solve_captcha.json()['Data']
         else:
-            exit("Error: " + solve_captcha.json()['message'])
+            exit("Error Captcha : " + solve_captcha.json()['message'])
 
     def get_session_captcha(self):
-        request_session = self.session.get(
+        homepage = self.session.get(
             url=self.API_ZEFOY,
-            headers=self.STATIC_HEADERS,
+            headers=self.STATIC_HEADERS
         )
-
-        soup = BeautifulSoup(request_session.text, 'html.parser')
+        soup = BeautifulSoup(homepage.text, 'html.parser')
 
         # Download Captcha Image
         try:
@@ -72,14 +97,12 @@ class ZefoyViews:
             with open('captcha.png', 'wb') as f:
                 f.write(request_captcha_image.content)
 
-            self.phpsessid = request_session.cookies.get_dict()['PHPSESSID']
         except AttributeError:
             self.get_session_captcha()
 
     def post_solve_captcha(self, captcha_result):
-
         try:
-            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+
             self.STATIC_HEADERS['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
 
             post_captcha = self.session.post(
@@ -99,7 +122,7 @@ class ZefoyViews:
     def get_status_services(self):
         try:
             temp_status = []
-            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+
             self.STATIC_HEADERS['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
 
             get_status_services = self.session.get(
@@ -119,7 +142,7 @@ class ZefoyViews:
     def send_multi_services(self, url_video, services):
         global soup
         try:
-            self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
+
             self.STATIC_HEADERS['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
 
             post_services = self.session.post(
@@ -134,8 +157,6 @@ class ZefoyViews:
             soup = BeautifulSoup(decode_old, 'html.parser')
             # print("Soup: " + str(soup))
             if "An error occurred. Please try again." in decode_old:
-
-
 
                 decode = self.force_send_multi_services(
                     url_video=url_video,
@@ -186,7 +207,6 @@ class ZefoyViews:
             return "Error: " + str(e)
 
     def force_send_multi_services(self, url_video, services, old_request):
-
         if 'tiktok' in url_video:
             if len(urlparse(url_video).path.split('/')[-1]) == 19:
                 valid_id = urlparse(url_video).path.split('/')[-1]
@@ -196,8 +216,6 @@ class ZefoyViews:
             return False
 
         parse = BeautifulSoup(old_request, 'html.parser')
-
-        self.STATIC_HEADERS['cookie'] = "PHPSESSID=" + self.phpsessid
         request_force_multiple_services = self.session.post(
             url=self.API_ZEFOY + self.STATIC_ENDPOINT[services],
             headers=self.STATIC_HEADERS,
