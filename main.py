@@ -243,8 +243,7 @@ def main():
                             pass
 
             except Exception as e:
-                print(
-                    "[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTRED_EX + "Unpredictable error : " + str(e))
+                pass
 
     else:
         print(Fore.RED + "Failed to solve captcha.")
