@@ -143,7 +143,9 @@ class ZefoyViews:
 
             decode_old = base64.b64decode(urllib.parse.unquote(post_services.text[::-1])).decode()
             soup = BeautifulSoup(decode_old, 'html.parser')
-            # print("Soup: " + str(soup))
+            if "This service is currently not working" in soup.text:
+                exit("This service is currently not working")
+
             if "An error occurred. Please try again." in decode_old:
 
                 decode = self.force_send_multi_services(
@@ -151,13 +153,21 @@ class ZefoyViews:
                     old_request=decode_old,
                     services=services
                 )
-                # print("Force Send: " + decode.__str__())
 
-                if "Successfully " + services.lower() + " sent." in decode:
+                # print("Force Send: " + decode.__str__())
+                soupDecode = BeautifulSoup(decode, 'html.parser')
+                if "Successfully " + services.lower() + " sent." in soupDecode.text:
                     return {
                         'message': 'Successfully ' + services.lower() + ' sent.',
                         'data': soup.find('button').text.strip()
                     }
+
+                elif services +" successfully sent" in soupDecode.find('span').text:
+                    return {
+                        'message': services + ' successfully sent.',
+                        'data': soup.find('button').text.strip() + " > " + soupDecode.find('span').text.strip()
+                    }
+
                 else:
                     return {
                         'message': 'Another State',

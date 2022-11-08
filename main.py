@@ -216,7 +216,7 @@ def main():
 
                             elif inject_hearts['message'] == "Hearts successfully sent.":
                                 print("[ " + str(datetime.datetime.now()) + " ] " + Fore.LIGHTGREEN_EX + inject_hearts[
-                                    'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video + Fore.LIGHTGREEN_EX + "Current Hearts: " +
+                                    'message'] + " to " + Fore.LIGHTYELLOW_EX + "" + url_video + Fore.LIGHTGREEN_EX + " Current Hearts: " +
                                       inject_hearts['data'], end="\n\n")
                                 print()
 
