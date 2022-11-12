@@ -14,6 +14,7 @@ Automation does not require Selenium or any other browser to be interface with Z
  | Google Ads bypassed                         | ✅              |
  | Windows exe added                           | Needs Update   |
  | Followers and Comments hearts               | Coming Soon 🚀 |
+ | Cloudflare Bypassed                         | Coming Soon 🚀 |
 
 
 ## Run Locally
