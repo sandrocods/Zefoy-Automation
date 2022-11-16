@@ -1,20 +1,29 @@
 
 # TikViews - Zefoy Automation
 
-Automation does not require Selenium or any other browser to be interface with Zefoy Web, it does so directly using a Request API. Not running Selenium or Chromium saves you ram :D
+Automation does not require Selenium or any other browser to be interface with Zefoy Web, it does so directly using a Full Request API. Not running Selenium or Chromium saves you ram :D
+
+
+https://user-images.githubusercontent.com/59155826/202221379-19774c47-fae0-4882-a949-9badfbdbce89.mp4
+
+```
+Soon Updated Feature : 
+ - Auto bypass new captcha 🚀
+ - Auto bypass cloudflare 🚀
+```
+
 
 ## Feature
 
 | Name                                        | Status         |
-|---------------------------------------------|----------------|
+|---------------------------------------------|-----------------|
 | Auto Bypass Captcha                         | ✅              |
 | No Selenium / puppeteer                     | ✅              |
 | Add New Services Shares , Hearts & Favorite | ✅              |
- | Detect status of services                   | ✅              |
- | Google Ads bypassed                         | ✅              |
- | Windows exe added                           | Needs Update   |
- | Followers and Comments hearts               | Coming Soon 🚀 |
- | Cloudflare Bypassed                         | Coming Soon 🚀 |
+| Detect status of services                   | ✅              |
+| Google Ads bypassed                         | ✅              |
+| Windows exe added                           | Needs Update     |
+| Followers and Comments hearts               | Coming Soon 🚀  |
 
 
 ## Run Locally
