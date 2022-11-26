@@ -32,7 +32,7 @@ def main():
         table = PrettyTable(field_names=["Services", "Status"], title="Status Services", header_style="upper",
                             border=True)
         status_services = inject.get_status_services()
-         if not status_services: print("Failed to get status services, try again later"); exit()
+        if not status_services: print("Failed to get status services, try again later"); exit()
 
         valid_services = []
         for service in status_services:
