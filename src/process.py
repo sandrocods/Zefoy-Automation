@@ -1,13 +1,13 @@
-import re
-import base64
-import requests
-import urllib.parse
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
+import urllib.parse
+import requests
+import base64
+import re
 
 #
 # for debug
-# from requests_toolbelt.utils import dump
+from requests_toolbelt.utils import dump
 
 
 class ZefoyViews:
@@ -21,17 +21,11 @@ class ZefoyViews:
         "origin": "https://zefoy.com",
     }
 
-    STATIC_ENDPOINT = {
-        "Views": "c2VuZC9mb2xsb3dlcnNfdGlrdG9V",
-        "Shares": "c2VuZC9mb2xsb3dlcnNfdGlrdG9s",
-        "Favorites": "c2VuZF9mb2xsb3dlcnNfdGlrdG9L",
-        "Hearts": "c2VuZE9nb2xsb3dlcnNfdGlrdG9r"
-    }
+    STATIC_ENDPOINT = {}
 
     def __init__(self):
         self.key_views = None
         self.session = requests.Session()
-        self.google_ads_inject()
         self.captcha = None
         self.phpsessid = None
 
@@ -44,35 +38,66 @@ class ZefoyViews:
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36",
             }
         )
+
         self.session.cookies.set("_gads", request_gfp.text.strip().split('_value_":"')[1].split('","_expires_')[0],
                                  domain='zefoy.com')
         self.session.cookies.set("__gpi", request_gfp.text.strip().split('_value_":"')[2].split('","_expires_')[0],
                                  domain='zefoy.com')
 
     def captcha_solver(self):
-        solve_captcha = requests.post(
-            url=self.API_VISION,
-            headers={
-                'Content-Type': 'application/json',
-                'Auth': 'sandroputraa',
-                'Host': 'api.sandroputraa.com',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
-            },
-            json={
-                "img": base64.b64encode(open('captcha.png', 'rb').read()).decode('utf-8')
-            }
-        )
-        if solve_captcha.status_code == 200 and solve_captcha.json()['message'] == 'Success':
-            return solve_captcha.json()['Data']
-        else:
-            exit("Error Captcha : " + solve_captcha.json()['message'])
+        try:
+            solve_captcha = requests.post(
+                url=self.API_VISION,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Auth': 'sandro_putraa',
+                    'Host': 'api.sandroputraa.com',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36',
+                },
+                json={
+                    "img": base64.b64encode(open('captcha.png', 'rb').read()).decode('utf-8')
+                }
+            )
+
+            if "RESOURCE_EXHAUSTED" in solve_captcha.text:
+                exit("API Limit Reached")
+
+            if "PERMISSION_DENIED" in solve_captcha.text:
+                exit("API Limit Reached")
+
+            if not solve_captcha.json()['Data'].isascii():
+                return "reload"
+
+            # is special character in captcha
+            if any(char in solve_captcha.json()['Data'] for char in
+                   ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '[', ']', '{', '}', '|', ';',
+                    ':', '"', "'", ',', '<', '.', '>', '/', '?']):
+                return "reload"
+
+            # is number in captcha
+            if any(char.isdigit() for char in solve_captcha.json()['Data']):
+                return "reload"
+
+            if solve_captcha.status_code == 200 and solve_captcha.json()['message'] == 'Success':
+
+                return solve_captcha.json()['Data'].split('\n')[0].strip()
+
+            else:
+                exit("Error: " + solve_captcha.json()['message'])
+
+        except TypeError:
+            return "reload"
 
     def get_session_captcha(self):
+
         homepage = self.session.get(
             url=self.API_ZEFOY,
             headers=self.STATIC_HEADERS
         )
         soup = BeautifulSoup(homepage.text, 'html.parser')
+
+        if homepage.cookies.get_dict().get('gfp') is None:
+            self.google_ads_inject()
 
         # Download Captcha Image
         try:
@@ -109,7 +134,8 @@ class ZefoyViews:
 
     def get_status_services(self):
         try:
-            temp_status = []
+            temp_status_1 = []
+            temp_status_2 = []
 
             self.STATIC_HEADERS['content-type'] = "application/x-www-form-urlencoded; charset=UTF-8"
 
@@ -118,12 +144,30 @@ class ZefoyViews:
                 headers=self.STATIC_HEADERS,
             )
             soup = BeautifulSoup(get_status_services.text, 'html.parser')
+
+            for x in soup.find_all('div', {'class': 'col-sm-9 col-xs-12 p-1 container'}):
+                temp_status_1.append({
+                    'name': x.find('h5').text.strip(),
+                    'key': x.find('form').get('action').strip(),
+                })
+
             for i in soup.find_all('div', {'class': 'col-sm-4 col-xs-12 p-1 colsmenu'}):
-                temp_status.append({
+                temp_status_2.append({
                     'name': i.findNext('h5').text.strip(),
                     'status': i.findNext('small').text.strip()
                 })
-            return temp_status
+
+            for key in temp_status_1:
+                for status in temp_status_2:
+                    if key['name'] == status['name']:
+                        self.STATIC_ENDPOINT.update(
+                            {
+                                status['name']: key['key']
+                            }
+                        )
+
+            return temp_status_2
+
         except Exception:
             self.get_status_services()
 
@@ -138,7 +182,7 @@ class ZefoyViews:
                 headers=self.STATIC_HEADERS,
                 data={
                     self.key_views: url_video,
-                }
+                },
             )
 
             decode_old = base64.b64decode(urllib.parse.unquote(post_services.text[::-1])).decode()
@@ -162,7 +206,7 @@ class ZefoyViews:
                         'data': soup.find('button').text.strip()
                     }
 
-                elif services +" successfully sent" in soupDecode.find('span').text:
+                elif services + " successfully sent" in soupDecode.find('span').text:
                     return {
                         'message': services + ' successfully sent.',
                         'data': soup.find('button').text.strip() + " > " + soupDecode.find('span').text.strip()
