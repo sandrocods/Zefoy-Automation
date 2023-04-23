@@ -1,5 +1,17 @@
 
+  
 # TikViews - Zefoy Automation
+
+
+>  📢 Announcement 📢
+
+> This script may no longer be supported on the latest version of the zefoy website 2023, I have done the latest update so that the script runs smoothly, but it is hosted on a private repository, if interested please contact me on telegram by making a donation to my paypal
+> [Paypal Donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XBKUWXWHDTBTS)
+> by donating you will get a full script with the latest updates and unencrypted and basic installation assistance.
+or you can ask via my telegram at: [My Telegram](https://t.me/Sandroputraaa)
+
+> Screenshot New Update : 
+![image](https://user-images.githubusercontent.com/59155826/233859219-13adb28f-b2b7-4195-8b33-b816abc753d2.png)
 
 Automation does not require Selenium or any other browser to be interface with Zefoy Web, it does so directly using a Full Request API. Not running Selenium or Chromium saves you ram :D
 
