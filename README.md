@@ -1,17 +1,27 @@
-
-  
 # TikViews - Zefoy Automation
+>  📢 Announcement  | Last Update 11-08-2023 | For Donation User 📢
+
+> This script may no longer be supported on the latest version of zefoy website 2023. We have made a new update version in august now with new update everything is working fine . but if you want the latest updates, you can donate to me directly by contacting via  [My Telegram](https://t.me/Sandroputraaa)
+
+> Demo Video of New Upadated : 
 
 
->  📢 Announcement 📢
+https://github.com/sandrocods/Zefoy-Automation/assets/59155826/b0f7d7dc-affe-449d-8998-6a9df9aa5deb
 
-> This script may no longer be supported on the latest version of the zefoy website 2023, I have done the latest update so that the script runs smoothly, but it is hosted on a private repository, if interested please contact me on telegram by making a donation to my paypal
-> [Paypal Donation](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XBKUWXWHDTBTS)
-> by donating you will get a full script with the latest updates and unencrypted and basic installation assistance.
-or you can ask via my telegram at: [My Telegram](https://t.me/Sandroputraaa)
 
-> Screenshot New Update : 
-![image](https://user-images.githubusercontent.com/59155826/233859219-13adb28f-b2b7-4195-8b33-b816abc753d2.png)
+### Feature Donation User
+
+| Name                                        | Status           |
+|---------------------------------------------|------------------|
+| Auto Bypass Captcha                         | ✅               |
+| Auto Bypass Cloudflare                      | ✅               |
+| No Selenium / puppeteer                     | ✅               |
+| Detect status of services                   | ✅               |
+
+
+
+# Old Version - Not Working again ❌
+
 
 Automation does not require Selenium or any other browser to be interface with Zefoy Web, it does so directly using a Full Request API. Not running Selenium or Chromium saves you ram :D
 
