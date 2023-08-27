@@ -1,12 +1,16 @@
 # TikViews - Zefoy Automation
->  📢 Announcement  | Last Update 11-08-2023 | For Donation User 📢
+>  📢 Announcement  | Last Update 28-08-2023 | For Donation User 📢
 
 > This script may no longer be supported on the latest version of zefoy website 2023. We have made a new update version in august now with new update everything is working fine . but if you want the latest updates, you can donate to me directly by contacting via  [My Telegram](https://t.me/Sandroputraaa)
 
 > Demo Video of New Upadated : 
 
 
-https://github.com/sandrocods/Zefoy-Automation/assets/59155826/b0f7d7dc-affe-449d-8998-6a9df9aa5deb
+
+https://github.com/sandrocods/Zefoy-Automation/assets/59155826/3fccdb62-fab9-4293-beda-631c465c4fa3
+
+
+
 
 
 ### Feature Donation User
@@ -14,8 +18,8 @@ https://github.com/sandrocods/Zefoy-Automation/assets/59155826/b0f7d7dc-affe-449
 | Name                                        | Status           |
 |---------------------------------------------|------------------|
 | Auto Bypass Captcha                         | ✅               |
-| Auto Bypass Cloudflare                      | ✅               |
-| No Selenium / puppeteer                     | ✅               |
+| Auto Bypass Cloudflare ( New Updates )      | ✅               |
+| Full Http Request ( Selenium for bypass cloudflare )      | ✅               |
 | Detect status of services                   | ✅               |
 
 
