@@ -24,9 +24,10 @@ https://github.com/sandrocods/Zefoy-Automation/assets/59155826/3fccdb62-fab9-429
 
 | Name                                        | Status           |
 |---------------------------------------------|------------------|
+| Proxy Support                               | ✅               |
 | Auto Bypass Captcha                         | ✅               |
 | Auto Bypass CloudFlare ( New Updates )      | ✅               |
-| Full Http Request ( Selenium for bypass CloudFlare )      | ✅               |
+| Full Http Request ( Selenium for bypass CloudFlare )      | ✅ |
 | Detect status of services                   | ✅               |
 
 
