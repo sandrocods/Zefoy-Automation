@@ -2,6 +2,12 @@
 >  📢 Announcement  | Last Update 28-08-2023 | For Donation User 📢
 
 > This script may no longer be supported on the latest version of zefoy website 2023. We have made a new update version in august now with new update everything is working fine . but if you want the latest updates, you can donate to me directly by contacting via  [My Telegram](https://t.me/Sandroputraaa)
+>
+> We provide 2 package, Basic and Professional :
+> 
+> - Basic will get ( exe ) Windows encrypted software [ Price ( 20$ ) ]
+> 
+> - Professional will get Full source code non enc [ Price is ( 80$ ) Free update 1 month ]  
 
 > Demo Video of New Upadated : 
 
@@ -9,7 +15,8 @@
 
 https://github.com/sandrocods/Zefoy-Automation/assets/59155826/3fccdb62-fab9-4293-beda-631c465c4fa3
 
-
+#### Hearts Enabled Trick 
+![image](https://github.com/sandrocods/Zefoy-Automation/assets/59155826/243feca8-91bd-43e0-9ced-7d14dc63022e)
 
 
 
@@ -18,8 +25,8 @@ https://github.com/sandrocods/Zefoy-Automation/assets/59155826/3fccdb62-fab9-429
 | Name                                        | Status           |
 |---------------------------------------------|------------------|
 | Auto Bypass Captcha                         | ✅               |
-| Auto Bypass Cloudflare ( New Updates )      | ✅               |
-| Full Http Request ( Selenium for bypass cloudflare )      | ✅               |
+| Auto Bypass CloudFlare ( New Updates )      | ✅               |
+| Full Http Request ( Selenium for bypass CloudFlare )      | ✅               |
 | Detect status of services                   | ✅               |
 
 
