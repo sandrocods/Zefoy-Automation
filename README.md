@@ -9,7 +9,7 @@
 > 
 > - Professional will get Full source code non enc [ Price is ( 80$ ) Free update 1 month ]  
 >
-> Donation User List : [Donation User List](https://raw.githubusercontent.com/sandrocods/Zefoy-Automation/master/donation-userlist.md)
+> Donation User List : [Donation User List](https://github.com/sandrocods/Zefoy-Automation/blob/master/donation-userlist.md)
 > 
 > Demo Video of New Upadated : 
 
