@@ -1,13 +1,13 @@
 # TikViews - Zefoy Automation
->  📢 Announcement  | Last Update 18-09-2023 | For Donation User 📢
+>  📢 Announcement  | Last Update 24-09-2023 | For Donation User 📢
 
-> This script may no longer be supported on the latest version of zefoy website 2023. We have made a new update version in august now with new update everything is working fine . but if you want the latest updates, you can donate to me directly by contacting via  [My Telegram](https://t.me/Sandroputraaa)
+> This script may no longer be supported on the latest version of zefoy website 2023. We have made a new update version in September now with new update everything is working fine . but if you want the latest updates, you can donate to me directly by contacting via  [My Telegram](https://t.me/Sandroputraaa)
 >
 > We provide 2 package, Basic and Professional :
 > 
 > - Basic will get ( exe ) Windows encrypted software [ Price ( 20$ ) ]
 > 
-> - Professional will get Full source code non enc [ Price is ( 80$ ) Free update 1 month ]  
+> - Professional will get Full source code non enc [ Price is ( 100$ ) Free update 2 month ]  
 >
 > Donation User List : [Donation User List](https://github.com/sandrocods/Zefoy-Automation/blob/master/donation-userlist.md)
 > 
