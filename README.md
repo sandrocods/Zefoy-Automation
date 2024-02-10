@@ -5,7 +5,7 @@
 >
 > We provide 2 package, Basic and Professional :
 > 
-> - Basic will get ( exe ) Windows encrypted software [ Price ( 20$ ) ]
+> - Basic will get ( exe ) Windows encrypted software [ Price ( 30$ ) ]
 > 
 > - Professional will get Full source code non enc [ Price is ( 100$ ) Free update 2 month ]  
 >
